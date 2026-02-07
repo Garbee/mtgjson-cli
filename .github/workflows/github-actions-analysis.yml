@@ -6,14 +6,13 @@ on:
       - main
     paths:
       - .github/workflows/*
-      - .github/matchers/*
+      - .github/formatters/*
   pull_request:
     branches:
       - main
     paths:
       - .github/workflows/*
-      - .github/matchers/*
-
+      - .github/formatters/*
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: ${{ github.event_name != 'push' }}
@@ -27,7 +26,7 @@ jobs:
     container:
       image: ghcr.io/garbee/mtgjson-cli-devcontainer:on.manual-7_1_2026-02-07-21-27-40
     permissions:
-      security-events: write # Required for upload-sarif (used by zizmor-action) to upload SARIF files.
+      security-events: write # Required for upload-sarif to upload SARIF files.
       contents: read # Only needed for private repos. Needed to clone the repo.
       actions: read # Only needed for private repos. Needed for upload-sarif to read workflow run info.
     steps:
@@ -36,11 +35,11 @@ jobs:
         with:
           persist-credentials: false
       - name: Run zizmor
-        run: zizmor --format=sarif . > results.sarif
+        run: zizmor --format=sarif --persona auditor . > zizmor.sarif
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@6bc82e05fd0ea64601dd4b465378bbcf57de0314 # v4.32.1
         with:
-          sarif_file: results.sarif
+          sarif_file: zizmor.sarif
           category: zizmor
   actionlint:
     name: Actionlint
@@ -49,15 +48,17 @@ jobs:
       image: ghcr.io/garbee/mtgjson-cli-devcontainer:on.manual-7_1_2026-02-07-21-27-40
     permissions:
       contents: read # Only needed for private repos. Needed to clone the repo.
+      actions: read # Only needed for private repos. Needed for upload-sarif to read workflow run info.
+      security-events: write # Required for upload-sarif to upload SARIF files.
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
       - name: Check workflow files
-        run: actionlint -format "$(cat .github/formatters/actionlint-sarif.gotmpl)" .github/workflows/*.yml > results.sarif
+        run: actionlint -format "$(cat .github/formatters/actionlint-sarif.gotmpl)" .github/workflows/*.yml > actionlint.sarif
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@6bc82e05fd0ea64601dd4b465378bbcf57de0314 # v4.32.1
         with:
-          sarif_file: results.sarif
+          sarif_file: actionlint.sarif
           category: actionlint
