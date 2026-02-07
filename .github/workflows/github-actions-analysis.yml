@@ -22,7 +22,7 @@ permissions: {}
 
 jobs:
   zizmor:
-    name: Security Analysis
+    name: Zizmor
     runs-on: ubuntu-24.04
     permissions:
       security-events: write # Required for upload-sarif (used by zizmor-action) to upload SARIF files.
