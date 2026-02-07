@@ -1,0 +1,192 @@
+name: Devcontainer Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      force_latest:
+        description: "Tag this manual build as latest"
+        required: false
+        type: boolean
+        default: false
+      production:
+        description: "Deploy to production environment"
+        required: false
+        type: boolean
+        default: false
+  schedule:
+    # Run at 3:17 AM UTC every Sunday
+    - cron: "17 3 * * 0"
+  push:
+    branches:
+      - main
+    paths:
+      - ".devcontainer/Dockerfile"
+      - ".github/workflows/devcontainer-build.yml"
+      - ".github/bin/**/*"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".devcontainer/Dockerfile"
+      - ".github/workflows/devcontainer-build.yml"
+      - ".github/bin/**/*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    timeout-minutes: 10
+
+    permissions:
+      contents: read # Ability to clone the repository.
+      packages: write # Ability to publish packages to GHCR.
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - arch: linux/amd64
+            runner: ubuntu-24.04
+            pair: linux-amd64
+          - arch: linux/arm64
+            runner: ubuntu-24.04-arm
+            pair: linux-arm64
+
+    runs-on: ${{ matrix.platform.runner }}
+
+    name: Build for ${{ matrix.platform.arch }}
+
+    env:
+      GHCR_IMAGE: ghcr.io/garbee/${{ (github.event_name == 'schedule' && 'mtgjson-cli-devcontainer') || ((github.event_name == 'workflow_dispatch' && inputs.production == 'true') && 'mtgjson-cli-devcontainer') || (github.event_name == 'pull_request' && 'mtgjson-cli.pr') || 'mtgjson-cli.dev' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
+        with:
+          cache-binary: false
+          platforms: ${{ matrix.platform.arch }}
+
+      - name: Extract Docker Metadata
+        id: meta
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
+        with:
+          images: ${{ env.GHCR_IMAGE }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        id: build
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
+        with:
+          push: true
+          platforms: ${{ matrix.platform.arch }}
+          labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
+          outputs: type=image,name=${{ env.GHCR_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+
+      - name: Export digest
+        env:
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          mkdir -p "${RUNNER_TEMP}/digests"
+          touch "${RUNNER_TEMP}/digests/${DIGEST#sha256:}"
+
+      - name: Upload digest
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: digests-${{ matrix.platform.pair }}
+          path: ${{ runner.temp }}/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  merge:
+    name: Merge Docker manifests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    permissions:
+      contents: read # Ability to clone the repository.
+      packages: write # Ability to publish packages to GHCR.
+
+    needs:
+      - build
+
+    env:
+      GHCR_IMAGE: ghcr.io/garbee/${{ (github.event_name == 'schedule' && 'mtgjson-cli-devcontainer') || ((github.event_name == 'workflow_dispatch' && inputs.production == 'true') && 'mtgjson-cli-devcontainer') || (github.event_name == 'pull_request' && 'mtgjson-cli.pr') || 'mtgjson-cli.dev' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          persist-credentials: false
+
+      - name: Download digests
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          path: ${{ runner.temp }}/digests
+          pattern: digests-*
+          merge-multiple: true
+
+      - name: Generate Docker Tag
+        id: tag_info
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          SHA: ${{ github.sha }}
+          RUN_NUMBER: ${{ github.run_number }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: ./.github/bin/generate-docker-tag.sh
+
+      - name: Normalize Branch Name
+        id: normalize_branch
+        run: ./.github/bin/normalize-branch-name.sh
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
+        with:
+          images: ${{ env.GHCR_IMAGE }}
+          # The tags we actually care about.
+          # 1. Branch with the name for non-PR builds.
+          # 2. `latest` which is a special primary tag only happens in the main branch when going into production.
+          # 3. The generated tag from `Generate Docker Tag`. This gives a scoped tag for every event.
+          # 4. Schedule tag to indicate when the automated build occured.
+          tags: |
+            type=raw,value=branch.${{ steps.normalize_branch.outputs.name }},enable=${{ github.event_name != 'pull_request' && 'true' || 'false' }}
+            type=raw,value=latest,enable=${{ github.ref_name == 'main' && (inputs.force_latest == true || github.event_name == 'schedule') || 'false' }}
+            type=raw,value=${{ steps.tag_info.outputs.TAG }}
+            type=schedule,pattern={{ date 'YYYY-MM-DD/HH:mm:ss' ts='America/New_York' }},enable=${{ github.event_name == 'schedule' && 'true' || 'false' }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
+        with:
+          cache-binary: false
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create manifest list and pushes
+        id: manifest-annotate
+        continue-on-error: false
+        env:
+          DIGEST_PATH: ${{ runner.temp }}/digests
+        run: ./.github/bin/create-manifests-and-push.sh

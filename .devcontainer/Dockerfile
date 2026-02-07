@@ -12,6 +12,7 @@ FROM rhysd/actionlint:1.7.8 AS actionlint-src
 FROM mvdan/shfmt:v3.12.0 AS shfmt-src
 FROM mikefarah/yq:4.50.1 AS yq-src
 FROM hairyhenderson/gomplate:v4.3.3 AS gomplate-src
+FROM ghcr.io/wagoodman/dive:v0.13.1 as dive-src
 
 ##
 ## Stage 2: runtime (Ubuntu latest LTS)
@@ -60,6 +61,7 @@ COPY --link --from=yq-src          /usr/bin/yq     /usr/local/bin/yq
 COPY --link --from=zizmor-src      /usr/bin/zizmor /usr/local/bin/zizmor
 COPY --link --from=shfmt-src       /bin/              /usr/local/bin/
 COPY --link --from=gomplate-src    /gomplate         /usr/local/bin/gomplate
+COPY --link --from=dive-src        /usr/local/bin/dive     /usr/local/bin/dive
 ## Actionlint also has shellcheck in its bin
 COPY --link --from=actionlint-src  /usr/local/bin/ /usr/local/bin/
 
@@ -88,7 +90,8 @@ apt-get install -y --no-install-recommends \
 ca-certificates libstdc++6 \
 wget bat fzf eza bash-completion \
 lsb-release unzip gnupg gnupg2 git gh \
-sudo gosu
+sudo gosu \
+skopeo
 
 rm -rf /var/lib/apt/lists/*
 
