@@ -5,12 +5,14 @@ on:
     branches:
       - main
     paths:
-      - .github/workflows
+      - .github/workflows/*
+      - .github/matchers/*
   pull_request:
     branches:
       - main
     paths:
-      - .github/workflows
+      - .github/workflows/*
+      - .github/matchers/*
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
