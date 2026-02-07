@@ -5,6 +5,9 @@ name: "Copilot Setup Steps"
 on:
   workflow_dispatch:
   push:
+    branches-ignore:
+      - "copilot/**"
+      - "dependabot/**"
     paths:
       - .github/workflows/copilot-setup-steps.yml
   pull_request:
@@ -20,20 +23,13 @@ permissions: {}
 jobs:
   # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot.
   copilot-setup-steps:
+    name: Copilot Setup
+
     runs-on: ubuntu-24.04
 
-    services:
-      docker:
-        image: docker@sha256:8bcbad4b45f0bff9d3e809d85a7ac589390f0be8acbc526850c998c35c1243fd # 29.2.1-dind
-        options: --privileged --shm-size=2g
-        volumes:
-          - /var/run/docker.sock:/var/run/docker.sock:ro
-    container:
-      image: ghcr.io/garbee/mtgjson-cli-devcontainer@sha256:4ad225a9b00fb4f4923489d02670ec73b968be7eac31c16ec5be5157ceae604c # on.manual-7_1_2026-02-07-21-27-40
-
-    defaults:
-      run:
-        shell: bash
+    # Note: Do not try to run inside of a container yet. That causes all the setup scripts
+    # by Copilot to fail since that triggers `sh` instead of `bash` for runs. Setting
+    # defaults to bash does not fix it.
 
     # Set the permissions to the lowest permissions possible needed for your steps.
     # Copilot will be given its own token for its operations.
@@ -45,3 +41,9 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Setup NodeJS
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        with:
+          node-version: 24
