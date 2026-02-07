@@ -17,10 +17,6 @@ concurrency:
 
 permissions: {}
 
-defaults:
-  run:
-    shell: bash
-
 jobs:
   # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot.
   copilot-setup-steps:
@@ -34,6 +30,10 @@ jobs:
           - /var/run/docker.sock:/var/run/docker.sock:ro
     container:
       image: ghcr.io/garbee/mtgjson-cli-devcontainer@sha256:4ad225a9b00fb4f4923489d02670ec73b968be7eac31c16ec5be5157ceae604c # on.manual-7_1_2026-02-07-21-27-40
+
+    defaults:
+      run:
+        shell: bash
 
     # Set the permissions to the lowest permissions possible needed for your steps.
     # Copilot will be given its own token for its operations.
