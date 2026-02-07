@@ -52,6 +52,15 @@ jobs:
 
     runs-on: ${{ matrix.platform.runner }}
 
+    services:
+      docker:
+        image: docker:29.2.1-dind
+        options: --privileged --shm-size=2g
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock:ro
+    container:
+      image: ghcr.io/garbee/mtgjson-cli-devcontainer:on.manual-7_1_2026-02-07-21-27-40
+
     name: Build for ${{ matrix.platform.arch }}
 
     env:
@@ -62,12 +71,6 @@ jobs:
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           persist-credentials: false
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
-        with:
-          cache-binary: false
-          platforms: ${{ matrix.platform.arch }}
 
       - name: Extract Docker Metadata
         id: meta
@@ -112,6 +115,15 @@ jobs:
     name: Merge Docker manifests
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+
+    services:
+      docker:
+        image: docker:29.2.1-dind
+        options: --privileged --shm-size=2g
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock:ro
+    container:
+      image: ghcr.io/garbee/mtgjson-cli-devcontainer:on.manual-7_1_2026-02-07-21-27-40
 
     permissions:
       contents: read # Ability to clone the repository.
@@ -165,11 +177,6 @@ jobs:
             type=raw,value=latest,enable=${{ github.ref_name == 'main' && (inputs.force_latest == true || github.event_name == 'schedule') || 'false' }}
             type=raw,value=${{ steps.tag_info.outputs.TAG }}
             type=schedule,pattern={{ date 'YYYY-MM-DD/HH:mm:ss' ts='America/New_York' }},enable=${{ github.event_name == 'schedule' && 'true' || 'false' }}
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
-        with:
-          cache-binary: false
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
