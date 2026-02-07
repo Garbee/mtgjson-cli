@@ -43,8 +43,11 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN <<EOF
 set -euxo pipefail
 groupadd -r node
+groupadd -r docker
 usermod -aG node ubuntu
 usermod -aG staff ubuntu
+usermod -aG docker ubuntu
+usermod -aG docker root
 mkdir -p /usr/local/lib/node_modules
 chown -R root:node /usr/local/lib/node_modules /usr/local/bin
 chmod -R 775 /usr/local/lib/node_modules /usr/local/bin
@@ -83,15 +86,19 @@ apt-get update
 apt-get install -y --no-install-recommends software-properties-common curl
 curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
 chmod 0044 /etc/apt/keyrings/githubcli-archive-keyring.gpg
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | tee /etc/apt/keyrings/docker.asc > /dev/null
+chmod 0044 /etc/apt/keyrings/docker.asc
 add-apt-repository ppa:git-core/ppa -y
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 apt-get update
 apt-get install -y --no-install-recommends \
 ca-certificates libstdc++6 \
 wget bat fzf eza bash-completion \
 lsb-release unzip gnupg gnupg2 git gh \
 sudo gosu \
-skopeo
+skopeo \
+docker-ce-cli docker-buildx-plugin docker-compose-plugin
 
 rm -rf /var/lib/apt/lists/*
 
