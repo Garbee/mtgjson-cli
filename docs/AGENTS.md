@@ -6,102 +6,83 @@ clarity, and accessibility across all documentation.
 
 ## Table of Contents
 
+* [Markdown Validation](#markdown-validation)
 * [Markdown Style Guidelines](#markdown-style-guidelines)
 * [Mermaid Diagram Guidelines](#mermaid-diagram-guidelines)
 * [WCAG AAA Color Compliance](#wcag-aaa-color-compliance)
 * [Best Practices](#best-practices)
 
+## Markdown Validation
+
+**IMPORTANT**: This project uses the `markdownlint-mcp` tool for automated
+markdown validation. Instead of memorizing specific formatting rules, you
+should use this tool to validate and fix your markdown documents.
+
+### Using markdownlint-mcp
+
+1. **Before Committing**: Always validate your markdown files using the
+   markdownlint-mcp tool before finalizing your changes.
+
+2. **How to Use**: The markdownlint-mcp tool is available as an MCP server
+   integration. Use it to:
+   * Check markdown files for linting violations
+   * Get specific error descriptions with line numbers
+   * Understand which rules are being violated
+   * Apply automatic fixes where possible
+
+3. **Workflow**:
+   * Write your markdown content following the general principles below
+   * Run markdownlint-mcp to validate the document
+   * Review and fix any reported issues
+   * Re-run validation to confirm all issues are resolved
+
+4. **Benefits**: Using the tool ensures:
+   * Consistent formatting across all documentation
+   * Compliance with project standards
+   * Catching issues early before code review
+   * Learning markdown best practices through feedback
+
+**Note**: The sections below provide high-level guidance. For specific
+formatting requirements, always defer to markdownlint-mcp validation results.
+
 ## Markdown Style Guidelines
+
+These guidelines provide high-level principles for writing markdown
+documentation. For specific formatting requirements, use the markdownlint-mcp
+tool to validate your work.
 
 ### General Principles
 
 1. **Clarity First**: Write for clarity and understanding. Assume readers
    may be new to the project.
 2. **Consistency**: Follow the patterns established in existing
-   documentation.
+   documentation and validated by markdownlint-mcp.
 3. **Conciseness**: Be clear and complete, but avoid unnecessary
    verbosity.
 4. **Active Voice**: Use active voice whenever possible for better
    readability.
 
-### Document Structure
+### Content Guidelines
 
-1. **Title**: Start each document with a single H1 heading (`#`) that
-   clearly describes the content.
-2. **Table of Contents**: For documents longer than 3 sections, include a
-   table of contents after the title.
-3. **Headings**: Use a logical hierarchy:
-   * H1 (`#`) - Document title (one per document)
-   * H2 (`##`) - Major sections
-   * H3 (`###`) - Subsections
-   * H4 (`####`) - Detail sections (use sparingly)
-4. **Spacing**: Use blank lines consistently:
-   * One blank line before and after headings
-   * One blank line between paragraphs
-   * One blank line before major section headings (H2)
+1. **Document Structure**: Use a clear heading hierarchy with a single H1
+   title and logical section organization.
 
-### Code Examples
+2. **Code Examples**: Always specify the language for code blocks to enable
+   syntax highlighting. Use inline code formatting for commands, file names,
+   and technical terms.
 
-1. **Code Blocks**: Always specify the language for syntax highlighting:
+3. **Lists**: Use ordered lists for sequential steps, unordered lists for
+   non-sequential items. Keep list items parallel in structure.
 
-   ```javascript
-   // Good
-   const example = "code";
-   ```
+4. **Links**: Use descriptive link text (avoid "click here"). Prefer
+   relative paths for internal documentation links.
 
-2. **Inline Code**: Use backticks for inline code, commands, file names,
-   and technical terms:
-   * Commands: `npm install`
-   * File names: `package.json`
-   * Variables: `userId`
+5. **Tables**: Include clear headers and maintain readability. Align
+   content appropriately.
 
-3. **Command Examples**: Include the expected output when helpful:
-
-   ```bash
-   npm run test
-   # Output: All tests passed (42 tests)
-   ```
-
-### Lists
-
-1. **Ordered Lists**: Use for sequential steps or ranked items.
-2. **Unordered Lists**: Use `*` for non-sequential items (not `-`).
-3. **Nested Lists**: Indent with 2 or 4 spaces consistently.
-4. **List Items**: Keep list items parallel in structure (all sentences,
-   all fragments, etc.).
-
-### Links
-
-1. **External Links**: Use descriptive text, not "click here" or raw URLs:
-   * Good: `See the [MTGJSON API documentation](https://mtgjson.com/api)`
-   * Avoid: `Click [here](https://mtgjson.com/api)`
-
-2. **Internal Links**: Use relative paths for linking to other docs:
-   * `[Configuration Guide](./configuration.md)`
-
-3. **Link Validation**: Ensure all links are valid before committing.
-
-### Emphasis
-
-1. **Bold** (`**text**`): Use for important terms, UI elements, or strong emphasis.
-2. *Italic* (`*text*`): Use for gentle emphasis or introducing new terms.
-3. **Avoid Overuse**: Don't bold or italicize entire sentences or paragraphs.
-
-### Tables
-
-1. **Alignment**: Use appropriate alignment for content:
-
-   ```markdown
-   | Name      | Type   | Description          |
-   |-----------|--------|----------------------|
-   | id        | string | Unique identifier    |
-   | count     | number | Number of items      |
-   ```
-
-2. **Headers**: Always include header rows with clear, descriptive
-   column names.
-3. **Consistency**: Maintain consistent column widths for readability
-   in source.
+**Remember**: Run markdownlint-mcp after writing to ensure your markdown
+follows all formatting rules. The tool will catch spacing issues, list
+formatting, line length problems, and other common mistakes.
 
 ## Mermaid Diagram Guidelines
 
@@ -286,11 +267,10 @@ flowchart LR
 
 Before completing your documentation work, verify:
 
-* [ ] All headings follow a logical hierarchy
+* [ ] Document has been validated with markdownlint-mcp (zero errors)
+* [ ] All markdownlint-mcp issues have been resolved
 * [ ] Code examples include syntax highlighting
 * [ ] Links are valid and use descriptive text
-* [ ] Lists are parallel in structure
-* [ ] Tables have clear headers and alignment
 * [ ] Diagrams use WCAG AAA compliant colors
 * [ ] Diagrams have descriptive context/captions
 * [ ] No spelling or grammar errors
@@ -321,10 +301,11 @@ Before completing your documentation work, verify:
 
 If you're unsure about any aspect of documentation:
 
-1. Review existing documentation for patterns and examples
-2. Check this guide for specific requirements
-3. Ask for clarification in comments before proceeding
-4. When in doubt, prioritize clarity and accessibility
+1. Use markdownlint-mcp to validate your markdown and identify issues
+2. Review existing documentation for patterns and examples
+3. Check this guide for high-level principles
+4. Ask for clarification in comments before proceeding
+5. When in doubt, prioritize clarity and accessibility
 
 ---
 
