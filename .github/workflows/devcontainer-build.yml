@@ -54,12 +54,12 @@ jobs:
 
     services:
       docker:
-        image: docker:29.2.1-dind
+        image: docker@sha256:8bcbad4b45f0bff9d3e809d85a7ac589390f0be8acbc526850c998c35c1243fd # 29.2.1-dind
         options: --privileged --shm-size=2g
         volumes:
           - /var/run/docker.sock:/var/run/docker.sock:ro
     container:
-      image: ghcr.io/garbee/mtgjson-cli-devcontainer@sha256:4ad225a9b00fb4f4923489d02670ec73b968be7eac31c16ec5be5157ceae604c
+      image: ghcr.io/garbee/mtgjson-cli-devcontainer@sha256:4ad225a9b00fb4f4923489d02670ec73b968be7eac31c16ec5be5157ceae604c # on.manual-7_1_2026-02-07-21-27-40
 
     name: Build for ${{ matrix.platform.arch }}
 
@@ -132,7 +132,7 @@ jobs:
         volumes:
           - /var/run/docker.sock:/var/run/docker.sock:ro
     container:
-      image: ghcr.io/garbee/mtgjson-cli-devcontainer@sha256:4ad225a9b00fb4f4923489d02670ec73b968be7eac31c16ec5be5157ceae604c
+      image: ghcr.io/garbee/mtgjson-cli-devcontainer@sha256:4ad225a9b00fb4f4923489d02670ec73b968be7eac31c16ec5be5157ceae604c # on.manual-7_1_2026-02-07-21-27-40
 
     permissions:
       contents: read # Ability to clone the repository.

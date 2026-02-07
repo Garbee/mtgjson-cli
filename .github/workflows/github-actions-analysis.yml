@@ -24,7 +24,7 @@ jobs:
     name: Zizmor
     runs-on: ubuntu-24.04
     container:
-      image: ghcr.io/garbee/mtgjson-cli-devcontainer@sha256:4ad225a9b00fb4f4923489d02670ec73b968be7eac31c16ec5be5157ceae604c
+      image: ghcr.io/garbee/mtgjson-cli-devcontainer@sha256:4ad225a9b00fb4f4923489d02670ec73b968be7eac31c16ec5be5157ceae604c # on.manual-7_1_2026-02-07-21-27-40
     permissions:
       security-events: write # Required for upload-sarif to upload SARIF files.
       contents: read # Only needed for private repos. Needed to clone the repo.
@@ -45,7 +45,7 @@ jobs:
     name: Actionlint
     runs-on: ubuntu-24.04
     container:
-      image: ghcr.io/garbee/mtgjson-cli-devcontainer@sha256:4ad225a9b00fb4f4923489d02670ec73b968be7eac31c16ec5be5157ceae604c
+      image: ghcr.io/garbee/mtgjson-cli-devcontainer@sha256:4ad225a9b00fb4f4923489d02670ec73b968be7eac31c16ec5be5157ceae604c # on.manual-7_1_2026-02-07-21-27-40
     permissions:
       contents: read # Only needed for private repos. Needed to clone the repo.
       actions: read # Only needed for private repos. Needed for upload-sarif to read workflow run info.
