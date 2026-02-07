@@ -47,7 +47,7 @@ original_name=${BRANCH}
 name=${normalized_name}
 EOF
 
-if [ "$DEBUG" ]; then
+if [ "${DEBUG:-}" ]; then
   echo "::group::Output Data"
   echo "Original branch name: $BRANCH"
   echo "Normalized branch name: $normalized_name"
