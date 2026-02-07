@@ -24,6 +24,8 @@ jobs:
   zizmor:
     name: Zizmor
     runs-on: ubuntu-24.04
+    container:
+      image: ghcr.io/garbee/mtgjson-cli-devcontainer:on.manual-7_1_2026-02-07-21-27-40
     permissions:
       security-events: write # Required for upload-sarif (used by zizmor-action) to upload SARIF files.
       contents: read # Only needed for private repos. Needed to clone the repo.
@@ -34,13 +36,17 @@ jobs:
         with:
           persist-credentials: false
       - name: Run zizmor
-        uses: zizmorcore/zizmor-action@0dce2577a4760a2749d8cfb7a84b7d5585ebcb7d # v0.5.0
+        run: zizmor --format=sarif . > results.sarif
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@6bc82e05fd0ea64601dd4b465378bbcf57de0314 # v4.32.1
         with:
-          inputs: .github/workflows
-          persona: auditor
+          sarif_file: results.sarif
+          category: zizmor
   actionlint:
     name: Actionlint
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-24.04
+    container:
+      image: ghcr.io/garbee/mtgjson-cli-devcontainer:on.manual-7_1_2026-02-07-21-27-40
     permissions:
       contents: read # Only needed for private repos. Needed to clone the repo.
     steps:
@@ -48,12 +54,10 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-      - name: Add Matcher
-        run: echo "::add-matcher::.github/matchers/actionlint.json"
-      - name: Download actionlint
-        id: get_actionlint
-        run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
-        shell: bash
       - name: Check workflow files
-        run: ${{ steps.get_actionlint.outputs.executable }} -color
-        shell: bash
+        run: actionlint -format "$(cat .github/formatters/actionlint-sarif.gotmpl)" .github/workflows/*.yml > results.sarif
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@6bc82e05fd0ea64601dd4b465378bbcf57de0314 # v4.32.1
+        with:
+          sarif_file: results.sarif
+          category: actionlint
