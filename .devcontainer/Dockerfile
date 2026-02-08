@@ -13,6 +13,7 @@ FROM mvdan/shfmt:v3.12.0 AS shfmt-src
 FROM mikefarah/yq:4.50.1 AS yq-src
 FROM hairyhenderson/gomplate:v4.3.3 AS gomplate-src
 FROM ghcr.io/wagoodman/dive:v0.13.1 as dive-src
+FROM lslintorg/ls-lint:1.11.2 AS lslint-src
 
 ##
 ## Stage 2: runtime (Ubuntu latest LTS)
@@ -67,6 +68,7 @@ COPY --link --from=gomplate-src    /gomplate         /usr/local/bin/gomplate
 COPY --link --from=dive-src        /usr/local/bin/dive     /usr/local/bin/dive
 ## Actionlint also has shellcheck in its bin
 COPY --link --from=actionlint-src  /usr/local/bin/ /usr/local/bin/
+COPY --link --from=lslint-src  /ls-lint /usr/local/bin/
 
 # Copy Go toolchain (GOROOT)
 COPY --link --from=go-src /usr/local/go/ /usr/local/go/

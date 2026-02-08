@@ -1,0 +1,20 @@
+# Casing reference
+#
+# lowercase: all letters are lowercase (e.g., "myfilename")
+# camelCase: lowercase first letter and uppercase letters for subsequent words (e.g., "myFileName")
+# pascalCase: uppercase first letter and uppercase letters for subsequent words (e.g., "MyFileName")
+# snake_case: lowercase letters and underscores (e.g., "my_file_name")
+# SCREAMING_SNAKE_CASE: uppercase letters and underscores (e.g., "MY_FILE_NAME")
+# kebab-case: lowercase letters and hyphens (e.g., "my-file-name")
+#
+# regex is also allowed: https://ls-lint.org/2.3/configuration/the-rules.html#regex
+# exists can also be used to limit how many of a given entry are on the filesystem: https://ls-lint.org/2.3/configuration/the-rules.html#exists
+
+
+ls:
+  .dir: kebab-case
+  .js: kebab-case
+  .mjs: kebab-case
+  .ts: kebab-case
+ignore:
+  - .git
