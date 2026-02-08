@@ -45,22 +45,22 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN <<EOF
 set -euxo pipefail
-groupadd -r node
+GLOBAL_NODE_MODULES="/usr/local/lib/node_modules"
 groupadd -r docker
-usermod -aG node ubuntu
 usermod -aG staff ubuntu
 usermod -aG docker ubuntu
 usermod -aG docker root
-mkdir -p /usr/local/lib/node_modules
-chown -R root:node /usr/local/lib/node_modules /usr/local/bin
-chmod -R 775 /usr/local/lib/node_modules /usr/local/bin
+chown -R root:staff /usr/local/bin
+mkdir -p "${GLOBAL_NODE_MODULES}"
 mkdir -p /etc/apt/keyrings
 chmod 755 /etc/apt/keyrings
 mkdir -p /etc/apt/sources.list.d
 chmod 755 /etc/apt/sources.list.d
 mkdir -p "${PNPM_HOME}" "${PNPM_STORE_PATH}"
-chmod 0755 "${PNPM_HOME}"
-chmod 0777 "${PNPM_STORE_PATH}"
+chmod -R 0775 "${PNPM_HOME}" "${GLOBAL_NODE_MODULES}" /usr/local/bin
+chmod -R 0777 "${PNPM_STORE_PATH}"
+chown -R ubuntu:staff "${PNPM_HOME}" "${PNPM_STORE_PATH}" "${GLOBAL_NODE_MODULES}"
+chmod -R g+sw "${PNPM_HOME}" "${PNPM_STORE_PATH}" "${GLOBAL_NODE_MODULES}"
 EOF
 
 # Bring in toolchains/artifacts (optimized with --link)
@@ -117,11 +117,17 @@ wget bat fzf eza bash-completion \
 lsb-release unzip gnupg gnupg2 git gh git-delta openssh-client \
 sudo gosu \
 skopeo \
-docker-ce-cli docker-buildx-plugin docker-compose-plugin
+docker-ce-cli docker-buildx-plugin docker-compose-plugin \
+neovim ripgrep fd-find
 
-# Setup sudo access
-echo "ubuntu ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ubuntu
-chmod 0440 /etc/sudoers.d/ubuntu
+# Setup sudo access with proper validation
+install -m 0440 -o root -g root /dev/null /etc/sudoers.d/ubuntu
+cat > /etc/sudoers.d/ubuntu <<EOSUDOERS
+# Allow ubuntu user to run any command without password
+ubuntu ALL=(ALL:ALL) NOPASSWD:ALL
+EOSUDOERS
+# Validate the sudoers file before continuing
+visudo -c -f /etc/sudoers.d/ubuntu
 
 ARCH=$(dpkg --print-architecture)
 if [ "$ARCH" = "amd64" ]; then
@@ -143,16 +149,8 @@ chown root:staff /etc/profile.d/pnpm.sh
 # Install pnpm globally
 curl -fsSL https://get.pnpm.io/install.sh | \
   env PNPM_HOME="${PNPM_HOME}" \
-      ENV=/etc/profile.d/pnpm.sh \
       SHELL=/bin/bash \
   bash -
-
-grep -q '/etc/profile.d/pnpm.sh' /etc/bash.bashrc || echo '. /etc/profile.d/pnpm.sh' >> /etc/bash.bashrc
-echo '. /etc/profile.d/pnpm.sh' >> /root/.bashrc
-echo '. /etc/profile.d/pnpm.sh' >> /home/ubuntu/.bashrc
-chown ubuntu:ubuntu /home/ubuntu/.bashrc
-
-source /etc/profile.d/pnpm.sh
 
 # Global npm configuration
 ## This sets config for both root and regular users.
@@ -183,11 +181,19 @@ logs-dir=/dev/null
 ## We want to get away from auto-running scripts entirely.
 ## Until then, at least don't hide them so we are aware of them.
 foreground-scripts=true
+##### PNPM configuration beyond this point
+## Only install packages after they have been released for at least 7 days.
+minimumReleaseAge=10080
+## Allowed packages to run postinstall scripts. Each set here
+## should be under a group that is a comment of the package that introduced it.
+#### For: @google/gemini-cli
+only-built-dependencies[]=node-pty
+only-built-dependencies[]=protobufjs
+only-built-dependencies[]=keytar
+only-built-dependencies[]=tree-sitter-bash
 EONPMRC
 
-pnpm config set --location=global minimumReleaseAge 10080
-
-pnpm add -g @dougis/markdown-lint-mcp@1.0.4 markdownlint@0.40.0
+gosu ubuntu pnpm add -g @dougis/markdown-lint-mcp@1.0.4 markdownlint@0.40.0
 
 go install golang.org/x/tools/gopls@v0.21.0
 

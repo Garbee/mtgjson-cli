@@ -3,7 +3,12 @@
 {
   "name": "MtgJson CLI Development Container",
 
-  "image": "mtgjson:latest",
+  "image": "ghcr.io/garbee/mtgjson-cli-devcontainer@sha256:4ad225a9b00fb4f4923489d02670ec73b968be7eac31c16ec5be5157ceae604c",
+
+  // Build is for locally testing docker changes before a new image is built.
+  // "build": {
+  //   "dockerfile": "Dockerfile"
+  // },
 
   // Features to add to the dev container. More info: https://containers.dev/features.
   // "features": {},
@@ -11,8 +16,8 @@
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
 
-  // Use 'postCreateCommand' to run commands after the container is created.
-  // "postCreateCommand": "go version",
+  "onCreateCommand": "${containerWorkspaceFolder}/.devcontainer/lifecycle-scripts/on-create.sh",
+  "postAttachCommand": "${containerWorkspaceFolder}/.devcontainer/lifecycle-scripts/post-attach.sh",
 
   // Configure tool-specific properties.
   // "customizations": {},

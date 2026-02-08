@@ -1,0 +1,23 @@
+# Git configuration for the development container
+#
+# Your host global git config is *copied* into the container. Then during post-create,
+# this is included in that container copy.
+#
+# Do not add anything personal in here as it is shared across devs.
+# Only configuration to ease the use of git in the container should be added here.
+#
+[core]
+    editor = code --wait
+
+[diff]
+    tool = vscode
+    guitool = vscode
+[difftool "vscode"]
+    cmd = code --wait --diff $LOCAL $REMOTE
+
+[merge]
+    tool = vscode
+    guitool = vscode
+    conflictStyle = zdiff3
+[mergetool "vscode"]
+    cmd = code --wait $MERGED
