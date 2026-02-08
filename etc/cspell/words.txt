@@ -7,6 +7,10 @@ zizmorcore
 jqlang
 shfmt
 yq
+dind
+keytar
+protobufjs
+gotmpl
 lslint
 lslintorg
 gomplate
