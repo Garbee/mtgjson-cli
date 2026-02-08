@@ -8,6 +8,10 @@ updates:
       time: "04:00"
       timezone: "America/New_York"
     rebase-strategy: disabled
+    ignore:
+      # Ignore node updates to stay on LTS versions
+      - dependency-name: "node"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
