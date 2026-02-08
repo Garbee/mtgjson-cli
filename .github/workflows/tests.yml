@@ -77,5 +77,5 @@ jobs:
         continue-on-error: true
         run: .github/workflows/scripts/run-markdownlint-cli2.sh
       - name: Check Linter Results
-        if: failure()
+        if: always()
         run: .github/workflows/scripts/check-linter-results.sh
