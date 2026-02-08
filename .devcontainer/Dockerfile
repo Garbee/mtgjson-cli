@@ -4,7 +4,7 @@
 ## Stage 1: Setup Dependency Images
 ##
 FROM golang:1.25-bookworm AS go-src
-FROM node:24-bookworm-slim AS node-src
+FROM node:25-bookworm-slim AS node-src
 FROM ghcr.io/zizmorcore/zizmor:1.21.0 AS zizmor-src
 FROM ghcr.io/jqlang/jq:1.8.1 AS jq-src
 FROM hadolint/hadolint:v2.14.0-debian AS hadolint-src
