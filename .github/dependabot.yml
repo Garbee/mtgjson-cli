@@ -8,6 +8,12 @@ updates:
       time: "04:00"
       timezone: "America/New_York"
     rebase-strategy: disabled
+    cooldown:
+      default-days: 7
+    ignore:
+      # Ignore semver-major node updates to stay on the current LTS major line (minor/patch still allowed)
+      - dependency-name: "node"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -17,3 +23,5 @@ updates:
       time: "04:00"
       timezone: "America/New_York"
     rebase-strategy: disabled
+    cooldown:
+      default-days: 7
