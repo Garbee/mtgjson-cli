@@ -59,7 +59,7 @@ jobs:
         volumes:
           - /var/run/docker.sock:/var/run/docker.sock:ro
     container:
-      image: ghcr.io/garbee/mtgjson-cli-devcontainer@sha256:4ad225a9b00fb4f4923489d02670ec73b968be7eac31c16ec5be5157ceae604c # on.manual-7_1_2026-02-07-21-27-40
+      image: ghcr.io/garbee/mtgjson-cli-devcontainer@sha256:f2c15804c59c68731053e6372586f893d4a145714fcd24303af37f5d2fe62e69 # on.manual-27_1_2026-02-08-23-05-57
 
     name: Build for ${{ matrix.platform.arch }}
 
@@ -132,7 +132,7 @@ jobs:
         volumes:
           - /var/run/docker.sock:/var/run/docker.sock:ro
     container:
-      image: ghcr.io/garbee/mtgjson-cli-devcontainer@sha256:4ad225a9b00fb4f4923489d02670ec73b968be7eac31c16ec5be5157ceae604c # on.manual-7_1_2026-02-07-21-27-40
+      image: ghcr.io/garbee/mtgjson-cli-devcontainer@sha256:f2c15804c59c68731053e6372586f893d4a145714fcd24303af37f5d2fe62e69 # on.manual-27_1_2026-02-08-23-05-57
 
     permissions:
       contents: read # Ability to clone the repository.
