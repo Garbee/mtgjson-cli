@@ -55,31 +55,31 @@ graph TD
 
 ## Jobs & Dependencies
 
-| Job Name | Purpose | Dependencies | Execution Context |
-|----------|---------|--------------|-------------------|
-| job-1 | [Purpose] | [Prerequisites] | [Runner/Environment] |
-| job-2 | [Purpose] | job-1 | [Runner/Environment] |
+| Job Name | Purpose    | Dependencies     | Execution Context     |
+|----------|------------|------------------|-----------------------|
+| job-1    | [Purpose]  | [Prerequisites]  | [Runner/Environment]  |
+| job-2    | [Purpose]  | job-1            | [Runner/Environment]  |
 
 ## Requirements Matrix
 
 ### Functional Requirements
 
-| ID | Requirement | Priority | Acceptance Criteria |
-|----|-------------|----------|-------------------|
-| REQ-001 | [Requirement] | High | [Testable criteria] |
-| REQ-002 | [Requirement] | Medium | [Testable criteria] |
+| ID      | Requirement    | Priority | Acceptance Criteria  |
+|---------|----------------|----------|----------------------|
+| REQ-001 | [Requirement]  | High     | [Testable criteria]  |
+| REQ-002 | [Requirement]  | Medium   | [Testable criteria]  |
 
 ### Security Requirements
 
-| ID | Requirement | Implementation Constraint |
-|----|-------------|---------------------------|
-| SEC-001 | [Security requirement] | [Constraint description] |
+| ID      | Requirement              | Implementation Constraint |
+|---------|--------------------------|---------------------------|
+| SEC-001 | [Security requirement]   | [Constraint description]  |
 
 ### Performance Requirements
 
-| ID | Metric | Target | Measurement Method |
-|----|-------|--------|-------------------|
-| PERF-001 | [Metric] | [Target value] | [How measured] |
+| ID       | Metric   | Target         | Measurement Method  |
+|----------|----------|----------------|---------------------|
+| PERF-001 | [Metric] | [Target value] | [How measured]      |
 
 ## Input/Output Contracts
 
@@ -105,10 +105,10 @@ build_artifact: file  # Description: [content type]
 
 ### Secrets & Variables
 
-| Type | Name | Purpose | Scope |
-|------|------|---------|-------|
-| Secret | SECRET_1 | [Purpose] | Workflow |
-| Variable | VAR_1 | [Purpose] | Repository |
+| Type     | Name     | Purpose    | Scope      |
+|----------|----------|------------|------------|
+| Secret   | SECRET_1 | [Purpose]  | Workflow   |
+| Variable | VAR_1    | [Purpose]  | Repository |
 
 ## Execution Constraints
 
@@ -126,21 +126,21 @@ build_artifact: file  # Description: [content type]
 
 ## Error Handling Strategy
 
-| Error Type | Response | Recovery Action |
-|------------|----------|-----------------|
-| Build Failure | [Response] | [Recovery steps] |
-| Test Failure | [Response] | [Recovery steps] |
-| Deployment Failure | [Response] | [Recovery steps] |
+| Error Type          | Response    | Recovery Action   |
+|---------------------|-------------|-------------------|
+| Build Failure       | [Response]  | [Recovery steps]  |
+| Test Failure        | [Response]  | [Recovery steps]  |
+| Deployment Failure  | [Response]  | [Recovery steps]  |
 
 ## Quality Gates
 
 ### Gate Definitions
 
-| Gate | Criteria | Bypass Conditions |
-|------|----------|-------------------|
-| Code Quality | [Standards] | [When allowed] |
-| Security Scan | [Thresholds] | [When allowed] |
-| Test Coverage | [Percentage] | [When allowed] |
+| Gate           | Criteria     | Bypass Conditions |
+|----------------|--------------|-------------------|
+| Code Quality   | [Standards]  | [When allowed]    |
+| Security Scan  | [Thresholds] | [When allowed]    |
+| Test Coverage  | [Percentage] | [When allowed]    |
 
 ## Monitoring & Observability
 
@@ -152,23 +152,23 @@ build_artifact: file  # Description: [content type]
 
 ### Alerting
 
-| Condition | Severity | Notification Target |
-|-----------|----------|-------------------|
-| [Condition] | [Level] | [Who/Where] |
+| Condition    | Severity | Notification Target |
+|--------------|----------|---------------------|
+| [Condition]  | [Level]  | [Who/Where]         |
 
 ## Integration Points
 
 ### External Systems
 
-| System | Integration Type | Data Exchange | SLA Requirements |
-|--------|------------------|---------------|------------------|
-| [System] | [Type] | [Data format] | [Requirements] |
+| System    | Integration Type | Data Exchange  | SLA Requirements |
+|-----------|------------------|----------------|------------------|
+| [System]  | [Type]           | [Data format]  | [Requirements]   |
 
 ### Dependent Workflows
 
-| Workflow | Relationship | Trigger Mechanism |
-|----------|--------------|-------------------|
-| [Workflow] | [Type] | [How triggered] |
+| Workflow    | Relationship | Trigger Mechanism |
+|-------------|--------------|-------------------|
+| [Workflow]  | [Type]       | [How triggered]   |
 
 ## Compliance & Governance
 
@@ -188,9 +188,9 @@ build_artifact: file  # Description: [content type]
 
 ### Scenario Matrix
 
-| Scenario | Expected Behavior | Validation Method |
-|----------|-------------------|-------------------|
-| [Edge case] | [Behavior] | [How to verify] |
+| Scenario     | Expected Behavior | Validation Method |
+|--------------|-------------------|-------------------|
+| [Edge case]  | [Behavior]        | [How to verify]   |
 
 ## Validation Criteria
 
@@ -216,9 +216,9 @@ build_artifact: file  # Description: [content type]
 
 ### Version History
 
-| Version | Date | Changes | Author |
-|---------|------|---------|--------|
-| 1.0 | [Date] | Initial specification | [Author] |
+| Version | Date   | Changes                 | Author   |
+|---------|--------|-------------------------|----------|
+| 1.0     | [Date] | Initial specification   | [Author] |
 
 ## Related Specifications
 
@@ -226,7 +226,7 @@ build_artifact: file  # Description: [content type]
 - [Link to infrastructure specs]
 - [Link to deployment specs]
 
-```
+```text
 
 ## Analysis Instructions
 
