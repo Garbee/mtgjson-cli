@@ -97,7 +97,7 @@ set -euxo pipefail
 apt-get update
 # In order to get apt-add-repository we need to install software-properties-common
 # Then we install all the main packages at once.
-apt-get install -y --no-install-recommends software-properties-common curl
+apt-get install -y --no-install-recommends software-properties-common curl apt-utils
 curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
 chmod 0044 /etc/apt/keyrings/githubcli-archive-keyring.gpg
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | tee /etc/apt/keyrings/docker.asc > /dev/null
@@ -109,7 +109,7 @@ apt-get update
 apt-get install -y --no-install-recommends \
 ca-certificates libstdc++6 \
 wget bat fzf eza bash-completion \
-lsb-release unzip gnupg gnupg2 git gh git-delta \
+lsb-release unzip gnupg gnupg2 git gh git-delta openssh-client \
 sudo gosu \
 skopeo \
 docker-ce-cli docker-buildx-plugin docker-compose-plugin
