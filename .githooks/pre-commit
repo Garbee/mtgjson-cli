@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+#
+# Pre Commit hook to run checks against the staged files
+# The way this works is for every type of file (or files)
+# that need to be checked, we use `git diff --cached` along
+# with a filter to determine if any are staged. If so,
+#  run the appropriate check.
+
+set -eou pipefail
+
+[[ "${DEBUG:-}" ]] && set -x
+
+echo "Running pre-commit checks"
+
+# Add cspell things for this file here that we don't need elsewhere.
+# cSpell:words ACMRT
+
+## Git Diff Filter Cheat Sheet:
+# A: Added files - new files that have been staged for commit
+# C: Copied files - files that have been copied and staged for commit
+# D: Deleted files - files that have been deleted and staged for commit
+# M: Modified files - files that have been modified and staged for commit
+# R: Renamed files - files that have been renamed and staged for commit
+# T: Type changed files - files whose file type has been changed and staged for commit
+# ---
+# U: Unmerged files - files that have merge conflicts and are staged for commit
+# X: Unknown files - files that are staged for commit but Git cannot determine their status
+# B: Broken pairing files - files that have been staged for commit but Git cannot determine their status due to a broken pairing (e.g., a file that was renamed but the original file is missing)
+
+## LS Lint applicable files mods are: added, copied, renamed, type changed
+if [[ ! -z "$(git diff --cached --name-only --diff-filter=ACMRT)" ]]; then
+  echo "Running ls-lint"
+  ls-lint "${DEBUG:+--debug}"
+fi
+
+## Markdownlint applicable files are: added, type changed, modified
+staged_markdown_files=$(git diff --cached --name-only --diff-filter=AMT -- '*.md' '.markdownlint-cli2.mjs')
+if [[ ! -z "$staged_markdown_files" ]]; then
+  echo "Running markdownlint"
+  # remove .markdownlint-cli2.mjs from the list of files to check since it is config and not linted here
+  staged_markdown_files=$(echo "$staged_markdown_files" | grep -v '.markdownlint-cli2.mjs')
+  # convert newlines to spaces for the markdownlint command
+  staged_markdown_files=$(echo "$staged_markdown_files" | tr '\n' ' ')
+
+  pnpm dlx markdownlint-cli2 "${staged_markdown_files}"
+fi
+
+## Scan all bin folders even in subdirectories
+staged_bin_files=$(git diff --cached --name-only --diff-filter=ACMRT -- '.githooks/*' '*.sh')
+# exclude markdown files from being made executable
+staged_bin_files=$(echo "$staged_bin_files" | grep -v '\.md$')
+if [[ ! -z "$staged_bin_files" ]]; then
+  echo "Ensuring shell script files are executable"
+  while IFS= read -r file; do
+    if [[ -f "$file" ]]; then
+      chmod +x "$file"
+      git add "$file"
+    fi
+  done <<< "$staged_bin_files"
+fi
+
+echo "Pre-commit checks passed"

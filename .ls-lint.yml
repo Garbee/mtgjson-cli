@@ -13,8 +13,18 @@
 
 ls:
   .dir: kebab-case
-  .js: kebab-case
-  .mjs: kebab-case
-  .ts: kebab-case
+  .md: kebab-case
+  .yml: kebab-case
+  .sh: kebab-case
+  etc:
+    cspell:
+      .txt: kebab-case
 ignore:
   - .git
+  - .devcontainer
+  - .githooks
+  - .github
+  - .ls-lint.yml
+  - LICENSE
+  - docs/AGENTS.md
+  - "docs/ai/**/*.md"
