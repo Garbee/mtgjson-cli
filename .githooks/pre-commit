@@ -30,7 +30,7 @@ fi
 
 
 # Add cspell things for this file here that we don't need elsewhere.
-# cSpell:words ACMRT
+# cSpell:words ACMRT,ACRT
 
 ## Git Diff Filter Cheat Sheet:
 # A: Added files - new files that have been staged for commit
@@ -45,7 +45,7 @@ fi
 # B: Broken pairing files - files that have been staged for commit but Git cannot determine their status due to a broken pairing (e.g., a file that was renamed but the original file is missing)
 
 ## LS Lint applicable files mods are: added, copied, renamed, type changed
-if [[ ! -z "$(git diff --cached --name-only --diff-filter=ACMRT)" ]]; then
+if [[ ! -z "$(git diff --cached --name-only --diff-filter=ACRT)" ]]; then
   echo "Running ls-lint"
   ls-lint "${DEBUG:+--debug}"
 fi
