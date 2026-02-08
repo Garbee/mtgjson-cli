@@ -8,6 +8,8 @@ updates:
       time: "04:00"
       timezone: "America/New_York"
     rebase-strategy: disabled
+    cooldown:
+      default-days: 7
     ignore:
       # Ignore node updates to stay on LTS versions
       - dependency-name: "node"
@@ -21,3 +23,5 @@ updates:
       time: "04:00"
       timezone: "America/New_York"
     rebase-strategy: disabled
+    cooldown:
+      default-days: 7
