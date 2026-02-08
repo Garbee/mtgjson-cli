@@ -3,14 +3,14 @@ description: 'Prompt and workflow for generating conventional commit messages us
 tools: ['execute/runInTerminal', 'execute/getTerminalOutput']
 ---
 
-### Instructions
+# Instructions
 
 ```xml
  <description>This file contains a prompt template for generating conventional commit messages. It provides instructions, examples, and formatting guidelines to help users write standardized, descriptive commit messages in accordance with the Conventional Commits specification.</description>
  <note>
 ```
 
-### Workflow
+## Workflow
 
 **Follow these steps:**
 
@@ -26,7 +26,7 @@ git commit -m "type(scope): description"
 
 1. Just execute this prompt and Copilot will handle the commit for you in the terminal.
 
-### Commit Message Structure
+## Commit Message Structure
 
 ```xml
 <commit-message>
@@ -38,7 +38,7 @@ git commit -m "type(scope): description"
 </commit-message>
 ```
 
-### Examples
+## Examples
 
 ```xml
 <examples>
@@ -51,7 +51,7 @@ git commit -m "type(scope): description"
 </examples>
 ```
 
-### Validation
+## Validation
 
 ```xml
 <validation>
@@ -63,7 +63,7 @@ git commit -m "type(scope): description"
 </validation>
 ```
 
-### Final Step
+## Final Step
 
 ```xml
 <final-step>

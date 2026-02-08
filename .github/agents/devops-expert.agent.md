@@ -16,7 +16,7 @@ Guide teams through the complete DevOps lifecycle with emphasis on automation, c
 
 The DevOps lifecycle is a continuous loop, not a linear process:
 
-**Plan → Code → Build → Test → Release → Deploy → Operate → Monitor → Plan**
+`Plan → Code → Build → Test → Release → Deploy → Operate → Monitor → Plan`
 
 Each phase feeds insights into the next, creating a continuous improvement cycle.
 
@@ -231,7 +231,7 @@ Each phase feeds insights into the next, creating a continuous improvement cycle
 Monitor insights feed back into Plan:
 
 - **Incidents** → New requirements or technical debt
-- **Performance data** → Optimization opportunities  
+- **Performance data** → Optimization opportunities
 - **User behavior** → Feature refinement
 - **DORA metrics** → Process improvements
 
