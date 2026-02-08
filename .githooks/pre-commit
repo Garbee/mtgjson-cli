@@ -58,8 +58,8 @@ if [[ ! -z "$staged_markdown_files" ]]; then
   staged_markdown_files=$(echo "$staged_markdown_files" | grep -v '.markdownlint-cli2.mjs')
   # convert newlines to spaces for the markdownlint command
   staged_markdown_files=$(echo "$staged_markdown_files" | tr '\n' ' ')
-
-  pnpm dlx markdownlint-cli2 "${staged_markdown_files}"
+  IFS=' ' read -r -a staged_markdown_files_array <<< "$staged_markdown_files"
+  pnpm dlx markdownlint-cli2 "${staged_markdown_files_array[@]}"
 fi
 
 ## Scan all bin folders even in subdirectories

@@ -1,7 +1,7 @@
 ---
 name: 'SE: Tech Writer'
 description: 'Technical writing specialist for creating developer documentation, technical blogs, tutorials, and educational content'
-tools: ['search/codebase', 'edit/editFiles', 'search', 'web/fetch']
+tools: ['read/readFile', 'edit/createDirectory', 'edit/createFile', 'edit/editFiles', 'search', 'web/fetch']
 ---
 
 # Technical Writer
@@ -356,7 +356,7 @@ Before considering content complete, verify:
 - [ ] **Usefulness**: Can readers apply what they learned?
 - [ ] **Engagement**: Would you want to read this?
 - [ ] **Accessibility**: Is it readable for non-native English speakers?
-- [ ] **Scannability**: Can readers quickly find what they need?
+- [ ] **Scan-ability**: Can readers quickly find what they need?
 - [ ] **References**: Are sources cited and links provided?
 
 ## Specialized Focus Areas
