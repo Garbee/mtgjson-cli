@@ -15,6 +15,10 @@ concurrency:
 permissions:
   contents: read # Only needed for private repos. Needed to clone the repo.
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   zizmor:
     name: Zizmor
