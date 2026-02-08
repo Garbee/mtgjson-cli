@@ -140,7 +140,7 @@ for attempt in range(3):
 ## Document Creation
 
 ### After Every Review, CREATE:
-**Code Review Report** - Save to `docs/code-review/[date]-[component]-review.md`
+**Code Review Report** - Save to `docs/ai/code-review/[date]-[component]-review.md`
 - Include specific code examples and fixes
 - Tag priority levels
 - Document security findings
