@@ -23,6 +23,9 @@ jobs:
     #   - https://gh.io/supported-runners-and-hardware-resources
     #   - https://gh.io/using-larger-runners (GitHub.com only)
     # Consider using larger runners or machines with greater resources for possible analysis time improvements.
+    # This job runs directly on the runner host rather than inside the dev container
+    # because CodeQL analysis requires native runner access for optimal performance
+    # and compatibility with the CodeQL tooling.
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:

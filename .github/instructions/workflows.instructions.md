@@ -174,3 +174,6 @@ file explaining why the container is not used. Known exceptions:
 * **Copilot Setup Steps** (`copilot-setup-steps.yml`) — the Copilot
   agent bootstrap process requires running directly on the runner host
   rather than inside a container.
+* **CodeQL Advanced** (`codeql.yml`) — CodeQL analysis requires native
+  runner access for optimal performance and compatibility with the
+  CodeQL tooling.
