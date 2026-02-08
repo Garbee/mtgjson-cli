@@ -10,7 +10,7 @@ FROM ghcr.io/jqlang/jq:1.8.1 AS jq-src
 FROM hadolint/hadolint:v2.14.0-debian AS hadolint-src
 FROM rhysd/actionlint:1.7.10 AS actionlint-src
 FROM mvdan/shfmt:v3.12.0 AS shfmt-src
-FROM mikefarah/yq:4.50.1 AS yq-src
+FROM mikefarah/yq:4.52.2 AS yq-src
 FROM hairyhenderson/gomplate:v4.3.3 AS gomplate-src
 FROM ghcr.io/wagoodman/dive:v0.13.1 AS dive-src
 FROM lslintorg/ls-lint:1.11.2 AS lslint-src
