@@ -1,9 +1,9 @@
-# syntax=docker/dockerfile:1.7
+# syntax=docker/dockerfile:1
 
 ##
 ## Stage 1: Setup Dependency Images
 ##
-FROM golang:1.25-bookworm as go-src
+FROM golang:1.25-bookworm AS go-src
 FROM node:24-bookworm-slim AS node-src
 FROM ghcr.io/zizmorcore/zizmor:1.21.0 AS zizmor-src
 FROM ghcr.io/jqlang/jq:1.8.1 AS jq-src
@@ -12,7 +12,7 @@ FROM rhysd/actionlint:1.7.8 AS actionlint-src
 FROM mvdan/shfmt:v3.12.0 AS shfmt-src
 FROM mikefarah/yq:4.50.1 AS yq-src
 FROM hairyhenderson/gomplate:v4.3.3 AS gomplate-src
-FROM ghcr.io/wagoodman/dive:v0.13.1 as dive-src
+FROM ghcr.io/wagoodman/dive:v0.13.1 AS dive-src
 FROM lslintorg/ls-lint:1.11.2 AS lslint-src
 
 ##
@@ -71,10 +71,20 @@ COPY --link --from=actionlint-src  /usr/local/bin/ /usr/local/bin/
 COPY --link --from=lslint-src  /ls-lint /usr/local/bin/
 
 # Copy Go toolchain (GOROOT)
-COPY --link --from=go-src /usr/local/go/ /usr/local/go/
+COPY --link --from=go-src \
+  --exclude=**/CONTRIBUTING.md \
+  --exclude=**/README.md \
+  --exclude=**/SECURITY.md \
+  --exclude=test/ \
+  --exclude=test/* \
+  /usr/local/go/ /usr/local/go/
 
 # Symlink-dependent toolchains (cannot use --link)
-COPY --from=node-src /usr/local/ /usr/local/
+COPY --from=node-src \
+  --exclude=*CHANGELOG.md \
+  --exclude=*README.md \
+  --exclude=bin/docker-entrypoint.sh \
+  /usr/local/ /usr/local/
 COPY --from=node-src /opt /opt
 
 RUN --mount=type=cache,target=/var/cache/apt,id=apt-archives,sharing=shared \
@@ -107,6 +117,18 @@ rm -rf /var/lib/apt/lists/*
 # Setup sudo access
 echo "ubuntu ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ubuntu
 chmod 0440 /etc/sudoers.d/ubuntu
+
+ARCH=$(dpkg --print-architecture)
+if [ "$ARCH" = "amd64" ]; then
+  MITMPROXY_ARCH="x86_64"
+elif [ "$ARCH" = "arm64" ]; then
+  MITMPROXY_ARCH="aarch64"
+else
+  echo "Unsupported architecture: $ARCH"
+  exit 1
+fi
+# Download and extract mitmproxy
+curl -fsSL https://downloads.mitmproxy.org/12.2.1/mitmproxy-12.2.1-linux-${MITMPROXY_ARCH}.tar.gz | tar xz -C /usr/local/bin/
 
 # Global npm configuration
 ## This sets config for both root and regular users.
