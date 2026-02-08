@@ -87,6 +87,8 @@ COPY --from=node-src \
   /usr/local/ /usr/local/
 COPY --from=node-src /opt /opt
 
+# This is for dev, we don't want to pin and cause more updates to the file.
+# hadolint ignore=DL3008
 RUN --mount=type=cache,target=/var/cache/apt,id=apt-archives,sharing=shared \
     --mount=type=cache,target=/var/lib/apt/lists,id=apt-lists,sharing=locked \
     <<EOF
@@ -107,12 +109,10 @@ apt-get update
 apt-get install -y --no-install-recommends \
 ca-certificates libstdc++6 \
 wget bat fzf eza bash-completion \
-lsb-release unzip gnupg gnupg2 git gh \
+lsb-release unzip gnupg gnupg2 git gh git-delta \
 sudo gosu \
 skopeo \
 docker-ce-cli docker-buildx-plugin docker-compose-plugin
-
-rm -rf /var/lib/apt/lists/*
 
 # Setup sudo access
 echo "ubuntu ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ubuntu
@@ -129,6 +129,10 @@ else
 fi
 # Download and extract mitmproxy
 curl -fsSL https://downloads.mitmproxy.org/12.2.1/mitmproxy-12.2.1-linux-${MITMPROXY_ARCH}.tar.gz | tar xz -C /usr/local/bin/
+
+# Install pnpm for both bash and sh shells
+curl -fsSL https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
+curl -fsSL https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sh -
 
 # Global npm configuration
 ## This sets config for both root and regular users.
@@ -161,8 +165,9 @@ logs-dir=/dev/null
 foreground-scripts=true
 EONPMRC
 
-npm install -g --omit=dev @dougis/markdown-lint-mcp@1.0.4 markdownlint@0.40.0
-npm cache clean --force
+pnpm config set --location=global minimumReleaseAge 10080
+
+pnpm add -g --omit=dev @dougis/markdown-lint-mcp@1.0.4 markdownlint@0.40.0
 
 go install golang.org/x/tools/gopls@v0.21.0
 
