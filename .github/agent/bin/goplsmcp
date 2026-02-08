@@ -3,4 +3,4 @@
 set -euo pipefail
 
 cd "${GITHUB_WORKSPACE:-$(pwd)}"
-exec gopls mcp
+exec gopls mcp "$@"
