@@ -12,6 +12,23 @@ set -eou pipefail
 
 echo "Running pre-commit checks"
 
+commands=(ls-lint pnpm)
+commandsNotFound=()
+for cmd in "${commands[@]}"; do
+  if ! command -v "$cmd" &> /dev/null; then
+    commandsNotFound+=("$cmd")
+  fi
+done
+
+if [[ ${#commandsNotFound[@]} -ne 0 ]]; then
+  # Make the color red background with black text for visibility
+  echo -e "\e[41;30mERROR\e[0m"
+  echo "The following required commands are not installed: ${commandsNotFound[*]}"
+  echo "Please install them to proceed."
+  exit 1
+fi
+
+
 # Add cspell things for this file here that we don't need elsewhere.
 # cSpell:words ACMRT
 
@@ -59,4 +76,5 @@ if [[ ! -z "$staged_bin_files" ]]; then
   done <<< "$staged_bin_files"
 fi
 
+echo -e "\e[42;30mSUCCESS\e[0m"
 echo "Pre-commit checks passed"
