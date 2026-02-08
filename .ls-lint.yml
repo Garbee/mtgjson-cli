@@ -27,4 +27,7 @@ ignore:
   - .ls-lint.yml
   - LICENSE
   - docs/AGENTS.md
-  - "docs/ai/**/*.md"
+  - docs/ai/code-review/README.md
+  # The upper is to get by CI right now. Figure out out
+  # to force ignore everything in the ai folder later.
+  - "docs/ai/*"
