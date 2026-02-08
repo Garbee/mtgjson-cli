@@ -77,6 +77,7 @@ COPY --link --from=lslint-src  /ls-lint /usr/local/bin/
 
 # Copy Go toolchain (GOROOT)
 COPY --link --from=go-src \
+  --chown=root:staff \
   --exclude=**/CONTRIBUTING.md \
   --exclude=**/README.md \
   --exclude=**/SECURITY.md \
@@ -86,11 +87,14 @@ COPY --link --from=go-src \
 
 # Symlink-dependent toolchains (cannot use --link)
 COPY --from=node-src \
+  --chown=root:staff \
   --exclude=*CHANGELOG.md \
   --exclude=*README.md \
   --exclude=bin/docker-entrypoint.sh \
   /usr/local/ /usr/local/
-COPY --from=node-src /opt /opt
+COPY --from=node-src \
+  --chown=root:staff \
+  /opt /opt
 
 # This is for dev, we don't want to pin and cause more updates to the file.
 # hadolint ignore=DL3008
@@ -141,11 +145,6 @@ fi
 # Download and extract mitmproxy
 curl -fsSL https://downloads.mitmproxy.org/12.2.1/mitmproxy-12.2.1-linux-${MITMPROXY_ARCH}.tar.gz | tar xz -C /usr/local/bin/
 
-mkdir -p /etc/profile.d/
-touch /etc/profile.d/pnpm.sh
-chmod 0664 /etc/profile.d/pnpm.sh
-chown root:staff /etc/profile.d/pnpm.sh
-
 # Install pnpm globally
 curl -fsSL https://get.pnpm.io/install.sh | \
   env PNPM_HOME="${PNPM_HOME}" \
@@ -193,7 +192,13 @@ only-built-dependencies[]=keytar
 only-built-dependencies[]=tree-sitter-bash
 EONPMRC
 
-gosu ubuntu pnpm add -g @dougis/markdown-lint-mcp@1.0.4 markdownlint@0.40.0
+# Install GitHub copilot
+curl -fsSL https://gh.io/copilot-install | sudo bash
+
+gosu ubuntu pnpm add -g \
+  @dougis/markdown-lint-mcp@1.0.4 \
+  markdownlint@0.40.0 \
+  markdownlint-cli2@0.20.0
 
 go install golang.org/x/tools/gopls@v0.21.0
 
