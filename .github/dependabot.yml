@@ -8,6 +8,8 @@ updates:
       time: "04:00"
       timezone: "America/New_York"
     rebase-strategy: disabled
+    ignore:
+      - dependency-name: "node"
 
   - package-ecosystem: "github-actions"
     directory: "/"
