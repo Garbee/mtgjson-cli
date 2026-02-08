@@ -146,3 +146,31 @@ swallow failures.
 Prefer pinning to a specific runner image version (e.g., `ubuntu-24.04`)
 rather than using floating aliases (e.g., `ubuntu-latest`). This avoids
 unexpected behavior when the alias rolls to a new image.
+
+## Dev Container Execution
+
+Every workflow job must run inside the project's dev container image so
+that all tooling is available and consistent with local development. Set
+the `container` key on each job to the pinned dev container image:
+
+```yaml
+jobs:
+  example:
+    runs-on: ubuntu-24.04
+    container:
+      image: ghcr.io/garbee/mtgjson-cli-devcontainer@sha256:<digest> # <tag>
+```
+
+Follow the [Container Images](#container-images) pinning rules: always
+reference the image by its `sha256` digest and include a trailing
+comment with the human-readable tag.
+
+### Exceptions
+
+A small number of workflows cannot run inside the dev container. When
+a job must run directly on the runner, add a comment in the workflow
+file explaining why the container is not used. Known exceptions:
+
+* **Copilot Setup Steps** (`copilot-setup-steps.yml`) — the Copilot
+  agent bootstrap process requires running directly on the runner host
+  rather than inside a container.
