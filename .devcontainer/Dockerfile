@@ -37,7 +37,9 @@ ENV DEBIAN_FRONTEND=noninteractive \
     GOCACHE=/var/cache/go-build \
     GOMODCACHE=/var/cache/go/pkg/mod \
     NPM_CONFIG_PREFIX=/usr/local \
-    PATH="/home/ubuntu/.local/bin:/usr/local/lib/node_modules/bin:/usr/local/go/bin:/usr/local/bin:/usr/bin:${PATH}"
+    PNPM_HOME=/opt/pnpm \
+    PNPM_STORE_PATH=/pnpm-store \
+    PATH="/home/ubuntu/.local/bin:/usr/local/lib/node_modules/bin:/opt/pnpm:/usr/local/go/bin:/usr/local/bin:/usr/bin:${PATH}"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -56,6 +58,9 @@ mkdir -p /etc/apt/keyrings
 chmod 755 /etc/apt/keyrings
 mkdir -p /etc/apt/sources.list.d
 chmod 755 /etc/apt/sources.list.d
+mkdir -p "${PNPM_HOME}" "${PNPM_STORE_PATH}"
+chmod 0755 "${PNPM_HOME}"
+chmod 0777 "${PNPM_STORE_PATH}"
 EOF
 
 # Bring in toolchains/artifacts (optimized with --link)
@@ -130,9 +135,24 @@ fi
 # Download and extract mitmproxy
 curl -fsSL https://downloads.mitmproxy.org/12.2.1/mitmproxy-12.2.1-linux-${MITMPROXY_ARCH}.tar.gz | tar xz -C /usr/local/bin/
 
-# Install pnpm for both bash and sh shells
-curl -fsSL https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
-curl -fsSL https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sh -
+mkdir -p /etc/profile.d/
+touch /etc/profile.d/pnpm.sh
+chmod 0664 /etc/profile.d/pnpm.sh
+chown root:staff /etc/profile.d/pnpm.sh
+
+# Install pnpm globally
+curl -fsSL https://get.pnpm.io/install.sh | \
+  env PNPM_HOME="${PNPM_HOME}" \
+      ENV=/etc/profile.d/pnpm.sh \
+      SHELL=/bin/bash \
+  bash -
+
+grep -q '/etc/profile.d/pnpm.sh' /etc/bash.bashrc || echo '. /etc/profile.d/pnpm.sh' >> /etc/bash.bashrc
+echo '. /etc/profile.d/pnpm.sh' >> /root/.bashrc
+echo '. /etc/profile.d/pnpm.sh' >> /home/ubuntu/.bashrc
+chown ubuntu:ubuntu /home/ubuntu/.bashrc
+
+source /etc/profile.d/pnpm.sh
 
 # Global npm configuration
 ## This sets config for both root and regular users.
@@ -167,7 +187,7 @@ EONPMRC
 
 pnpm config set --location=global minimumReleaseAge 10080
 
-pnpm add -g --omit=dev @dougis/markdown-lint-mcp@1.0.4 markdownlint@0.40.0
+pnpm add -g @dougis/markdown-lint-mcp@1.0.4 markdownlint@0.40.0
 
 go install golang.org/x/tools/gopls@v0.21.0
 

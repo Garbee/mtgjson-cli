@@ -3,7 +3,7 @@
 {
   "name": "MtgJson CLI Development Container",
 
-  "image": "ghcr.io/garbee/mtgjson-cli-devcontainer@sha256:4ad225a9b00fb4f4923489d02670ec73b968be7eac31c16ec5be5157ceae604c",
+  "image": "mtgjson:latest",
 
   // Features to add to the dev container. More info: https://containers.dev/features.
   // "features": {},
