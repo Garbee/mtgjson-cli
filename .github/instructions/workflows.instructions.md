@@ -13,9 +13,13 @@ designed for idempotent, waste-free execution.
 The `main` branch is the single source of truth. Every workflow must
 reflect this:
 
-* **Push triggers** target only `main`. Never target long-lived feature
-  branches.
-* **Pull request triggers** target only `main` as the base branch.
+* **Push triggers** should by default target only `main`. Configure
+  additional branches only when there is a specific, documented reason
+  in the workflow file (for example, validating workflow changes via
+  `paths` filters), rather than for long-lived feature branches.
+* **Pull request triggers** should by default target `main` as the base
+  branch. If you need PR workflows for other base branches, document the
+  rationale in the workflow file.
 * Short-lived branches merge into `main` through pull requests. Do not
   design workflows that depend on branch hierarchies or cascading merges.
 * Exclude automated branch prefixes from push triggers using
@@ -44,11 +48,20 @@ gate cancellation on the event type:
 cancel-in-progress: ${{ github.event_name != 'push' }}
 ```
 
-### Path Filters
+### Path Filters and Required Checks
 
-Use `paths` filters on both `push` and `pull_request` triggers so
-workflows only run when relevant files change. A workflow that builds
-Docker images should not re-run when only documentation changes.
+When a new workflow is needed, first determine whether it will be part of
+a required status check for pull requests:
+
+* **Required checks** must not use `paths` filters. Add the check as a
+  new job in the existing `tests.yml` workflow (or a similar
+  event-driven workflow) so it runs on every relevant push and pull
+  request. This prevents pull requests from being unmergeable due to a
+  missing required status.
+* **Non-required workflows** should use `paths` filters on both `push`
+  and `pull_request` triggers so they only run when relevant files
+  change. For example, a workflow that builds Docker images should not
+  re-run when only documentation changes.
 
 ### Timeouts
 
