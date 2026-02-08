@@ -147,3 +147,4 @@ rm -rf /tmp/*
 EOF
 
 WORKDIR /workspace
+USER ubuntu
