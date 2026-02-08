@@ -77,7 +77,7 @@ COPY --link --from=lslint-src  /ls-lint /usr/local/bin/
 
 # Copy Go toolchain (GOROOT)
 COPY --link --from=go-src \
-  --chown=root:staff \
+  --chown=0:50 \
   --exclude=**/CONTRIBUTING.md \
   --exclude=**/README.md \
   --exclude=**/SECURITY.md \
@@ -87,13 +87,13 @@ COPY --link --from=go-src \
 
 # Symlink-dependent toolchains (cannot use --link)
 COPY --from=node-src \
-  --chown=root:staff \
+  --chown=0:50 \
   --exclude=*CHANGELOG.md \
   --exclude=*README.md \
   --exclude=bin/docker-entrypoint.sh \
   /usr/local/ /usr/local/
 COPY --from=node-src \
-  --chown=root:staff \
+  --chown=0:50 \
   /opt /opt
 
 # This is for dev, we don't want to pin and cause more updates to the file.
