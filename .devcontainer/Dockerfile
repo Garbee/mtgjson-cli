@@ -8,7 +8,7 @@ FROM node:24-bookworm-slim AS node-src
 FROM ghcr.io/zizmorcore/zizmor:1.21.0 AS zizmor-src
 FROM ghcr.io/jqlang/jq:1.8.1 AS jq-src
 FROM hadolint/hadolint:v2.14.0-debian AS hadolint-src
-FROM rhysd/actionlint:1.7.8 AS actionlint-src
+FROM rhysd/actionlint:1.7.10 AS actionlint-src
 FROM mvdan/shfmt:v3.12.0 AS shfmt-src
 FROM mikefarah/yq:4.50.1 AS yq-src
 FROM hairyhenderson/gomplate:v4.3.3 AS gomplate-src
