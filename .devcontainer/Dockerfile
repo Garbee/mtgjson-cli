@@ -192,6 +192,9 @@ only-built-dependencies[]=keytar
 only-built-dependencies[]=tree-sitter-bash
 EONPMRC
 
+# Install GitHub copilot
+curl -fsSL https://gh.io/copilot-install | sudo bash
+
 gosu ubuntu pnpm add -g \
   @dougis/markdown-lint-mcp@1.0.4 \
   markdownlint@0.40.0 \
