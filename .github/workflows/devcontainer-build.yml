@@ -105,6 +105,8 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
           outputs: type=image,name=${{ env.GHCR_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          cache-from: type=gha,scope=${{ matrix.platform.pair }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.platform.pair }}
 
       - name: Export digest
         env:
