@@ -44,7 +44,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Add Agent Binaries to Path
-        run: install -D "$GITHUB_WORKSPACE/.github/agent/bin/goplsmcp" /usr/local/bin
+        run: install -D "$GITHUB_WORKSPACE/.github/agent/bin/goplsmcp.sh" /usr/local/bin
       - name: Setup NodeJS
         uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
