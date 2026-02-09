@@ -149,3 +149,4 @@ zizmor --persona auditor "<path-or-glob-for-workflow-files>"
 - Ensure `zizmor` with the auditor persona passes for all workflows
 - Never skip security scanning
 - Monitor workflows for failures and anomalies
+- Any step using the `gh` CLI must set `GH_TOKEN: ${{ github.token }}` in its environment

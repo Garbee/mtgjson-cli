@@ -65,7 +65,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euoC pipefail
-          gh release download --repo zizmor/zizmor --pattern "zizmor-x86_64-unknown-linux-gnu.tar.gz" --dir "$TMP_DIR" --output "zizmor.tar.gz"
-          tar -xzf "$TMP_DIR/zizmor.tar.gz" -C "$TMP_DIR"
+          tarball="$TMP_DIR/zizmor.tar.gz"
+          gh release download --repo zizmor/zizmor --pattern "zizmor-x86_64-unknown-linux-gnu.tar.gz" --output "$tarball"
+          tar -xzf "$tarball" -C "$TMP_DIR"
           install -D "$TMP_DIR/zizmor" /usr/local/bin
-          rm "$TMP_DIR/zizmor.tar.gz" "$TMP_DIR/zizmor"
+          rm "$tarball" "$TMP_DIR/zizmor"
