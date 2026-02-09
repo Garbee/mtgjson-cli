@@ -1,0 +1,52 @@
+name: PR Cache Cleanup
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  cleanup:
+    name: Delete PR caches
+    runs-on: ubuntu-24.04
+    container:
+      image: ghcr.io/garbee/mtgjson-cli-devcontainer@sha256:f2c15804c59c68731053e6372586f893d4a145714fcd24303af37f5d2fe62e69 # on.manual-27_1_2026-02-08-23-05-57
+      options: --user 0
+    permissions:
+      actions: write # Required to delete GitHub Actions caches.
+    timeout-minutes: 5
+    steps:
+      - name: Delete caches for closed PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euoC pipefail
+
+          BRANCH="refs/pull/${PR_NUMBER}/merge"
+          echo "Deleting GitHub Actions caches for ref: ${BRANCH}"
+
+          gh api \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${REPO}/actions/caches?ref=${BRANCH}" \
+            --paginate \
+            --jq '.actions_caches[].id' | \
+          while IFS= read -r cache_id; do
+            echo "Deleting cache ID: ${cache_id}"
+            gh api \
+              --method DELETE \
+              -H "Accept: application/vnd.github+json" \
+              "/repos/${REPO}/actions/caches/${cache_id}" || \
+              echo "Warning: failed to delete cache ${cache_id}"
+          done
+
+          echo "Cache cleanup complete."
