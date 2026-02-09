@@ -3,6 +3,19 @@
 This devcontainer is used to aid in local development as
 well as CI for consistent operations.
 
+## Running as Root
+
+The container image does not set a non-root default user with the
+`USER` instruction. GitHub Actions
+[requires](https://docs.github.com/en/actions/reference/workflows-and-actions/dockerfile-support#user)
+that Docker actions run as the default Docker user (root). Setting a
+different default user prevents access to the `GITHUB_WORKSPACE`
+directory and causes permission errors in actions such as
+[actions/checkout](https://github.com/actions/checkout/issues/956).
+
+For local development the `devcontainer.json` sets `remoteUser` to
+`ubuntu`, so interactive sessions still run as a non-root user.
+
 ## Potential Problems
 
 ### SSH Key not found
