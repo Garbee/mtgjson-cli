@@ -63,6 +63,6 @@ jobs:
         run: |
           set -euoC pipefail
           gh release download --repo zizmor/zizmor --pattern "zizmor-x86_64-unknown-linux-gnu.tar.gz" --dir "$TMP_DIR" --output "zizmor.tar.gz"
-          tar -xzf $TMP_DIR/zizmor.tar.gz -C $TMP_DIR
-          install -D $TMP_DIR/zizmor /usr/local/bin
-          rm $TMP_DIR/zizmor.tar.gz $TMP_DIR/zizmor
+          tar -xzf "$TMP_DIR/zizmor.tar.gz" -C "$TMP_DIR"
+          install -D "$TMP_DIR/zizmor" /usr/local/bin
+          rm "$TMP_DIR/zizmor.tar.gz" "$TMP_DIR/zizmor"

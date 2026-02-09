@@ -76,5 +76,15 @@ if [[ ! -z "$staged_bin_files" ]]; then
   done <<< "$staged_bin_files"
 fi
 
+## Scan all workflow files in .github/workflows
+staged_workflow_files=$(git diff --cached --name-only --diff-filter=ACMRT -- '.github/workflows/*.yml')
+if [[ ! -z "$staged_workflow_files" ]]; then
+  echo "Running scans for Github Actions workflow files"
+  staged_workflow_files=$(echo "$staged_workflow_files" | tr '\n' ' ')
+  IFS=' ' read -r -a staged_workflow_files_array <<< "$staged_workflow_files"
+  zizmor --persona auditor "${staged_workflow_files_array[@]}"
+  actionlint "${staged_workflow_files_array[@]}"
+fi
+
 echo -e "\e[42;30mSUCCESS\e[0m"
 echo "Pre-commit checks passed"
