@@ -1,7 +1,7 @@
 ---
 description: 'Refine the requirement or issue with Acceptance Criteria, Technical Considerations, Edge Cases, and NFRs'
 name: 'Refine Requirement or Issue'
-tools: ['read/readFile', 'agent', 'github/add_issue_comment', 'github/get_file_contents', 'github/issue_read', 'github/issue_write', 'github/list_issues', 'github/search_issues', 'github/sub_issue_write', 'search', 'web/githubRepo', 'vscode.mermaid-chat-features/renderMermaidDiagram']
+tools: ['read/readFile', 'agent', 'github/add_issue_comment', 'github/get_file_contents', 'github/issue_read', 'github/issue_write', 'github/list_issues', 'github/search_issues', 'github/sub_issue_write', 'search', 'web/githubRepo', 'vscode.mermaid-chat-features/renderMermaidDiagram', 'github/request_copilot_review']
 ---
 
 # Refine Requirement or Issue Chat Mode
