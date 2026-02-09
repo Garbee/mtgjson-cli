@@ -1,0 +1,38 @@
+name: PR Cache Cleanup
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  cleanup:
+    name: Delete PR caches
+    # This job runs directly on the runner without the dev container because
+    # it only needs the gh CLI (pre-installed on GitHub-hosted runners) and
+    # has no project tooling dependencies.
+    runs-on: ubuntu-slim
+    permissions:
+      actions: write # Required to delete GitHub Actions caches.
+      contents: read # Required to checkout the repository.
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Delete caches for closed PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: ./.github/workflows/scripts/delete-pr-caches.sh

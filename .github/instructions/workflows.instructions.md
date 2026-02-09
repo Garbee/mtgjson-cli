@@ -177,3 +177,6 @@ file explaining why the container is not used. Known exceptions:
 * **CodeQL Advanced** (`codeql.yml`) — CodeQL analysis requires native
   runner access for optimal performance and compatibility with the
   CodeQL tooling.
+* **PR Cache Cleanup** (`pr-cache-cleanup.yml`) — this job only needs
+  the `gh` CLI (pre-installed on GitHub-hosted runners) and has no
+  project tooling dependencies, so the dev container is unnecessary.
