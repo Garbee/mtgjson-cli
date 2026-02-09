@@ -25,7 +25,6 @@ jobs:
     runs-on: ubuntu-24.04
     container:
       image: ghcr.io/garbee/mtgjson-cli-devcontainer@sha256:149e002097429f9ba25020c0c9c1a76b0c91c28d8df200f397fa5007d56a9881 # on.manual-35_1_2026-02-09-12-31-13
-      options: --user 0
     permissions:
       security-events: write # Required for upload-sarif to upload SARIF files.
       contents: read # Only needed for private repos. Needed to clone the repo.
@@ -47,7 +46,6 @@ jobs:
     runs-on: ubuntu-24.04
     container:
       image: ghcr.io/garbee/mtgjson-cli-devcontainer@sha256:149e002097429f9ba25020c0c9c1a76b0c91c28d8df200f397fa5007d56a9881 # on.manual-35_1_2026-02-09-12-31-13
-      options: --user 0
     permissions:
       contents: read # Only needed for private repos. Needed to clone the repo.
       actions: read # Only needed for private repos. Needed for upload-sarif to read workflow run info.
@@ -70,7 +68,6 @@ jobs:
     timeout-minutes: 10
     container:
       image: ghcr.io/garbee/mtgjson-cli-devcontainer@sha256:149e002097429f9ba25020c0c9c1a76b0c91c28d8df200f397fa5007d56a9881 # on.manual-35_1_2026-02-09-12-31-13
-      options: --user 0
     permissions:
       contents: read # Only needed for private repos. Needed to clone the repo.
     steps:

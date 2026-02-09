@@ -60,7 +60,6 @@ jobs:
           - /var/run/docker.sock:/var/run/docker.sock:ro
     container:
       image: ghcr.io/garbee/mtgjson-cli-devcontainer@sha256:149e002097429f9ba25020c0c9c1a76b0c91c28d8df200f397fa5007d56a9881 # on.manual-35_1_2026-02-09-12-31-13
-      options: --user 0
 
     name: Build for ${{ matrix.platform.arch }}
 
@@ -136,7 +135,6 @@ jobs:
           - /var/run/docker.sock:/var/run/docker.sock:ro
     container:
       image: ghcr.io/garbee/mtgjson-cli-devcontainer@sha256:149e002097429f9ba25020c0c9c1a76b0c91c28d8df200f397fa5007d56a9881 # on.manual-35_1_2026-02-09-12-31-13
-      options: --user 0
 
     permissions:
       contents: read # Ability to clone the repository.
