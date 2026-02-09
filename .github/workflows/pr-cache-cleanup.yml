@@ -16,37 +16,23 @@ concurrency:
 jobs:
   cleanup:
     name: Delete PR caches
-    runs-on: ubuntu-24.04
-    container:
-      image: ghcr.io/garbee/mtgjson-cli-devcontainer@sha256:f2c15804c59c68731053e6372586f893d4a145714fcd24303af37f5d2fe62e69 # on.manual-27_1_2026-02-08-23-05-57
-      options: --user 0
+    # This job runs directly on the runner without the dev container because
+    # it only needs the gh CLI (pre-installed on GitHub-hosted runners) and
+    # has no project tooling dependencies.
+    runs-on: ubuntu-slim
     permissions:
       actions: write # Required to delete GitHub Actions caches.
+      contents: read # Required to checkout the repository.
     timeout-minutes: 5
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
       - name: Delete caches for closed PR
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          set -euoC pipefail
-
-          BRANCH="refs/pull/${PR_NUMBER}/merge"
-          echo "Deleting GitHub Actions caches for ref: ${BRANCH}"
-
-          gh api \
-            -H "Accept: application/vnd.github+json" \
-            "/repos/${REPO}/actions/caches?ref=${BRANCH}" \
-            --paginate \
-            --jq '.actions_caches[].id' | \
-          while IFS= read -r cache_id; do
-            echo "Deleting cache ID: ${cache_id}"
-            gh api \
-              --method DELETE \
-              -H "Accept: application/vnd.github+json" \
-              "/repos/${REPO}/actions/caches/${cache_id}" || \
-              echo "Warning: failed to delete cache ${cache_id}"
-          done
-
-          echo "Cache cleanup complete."
+        run: ./.github/workflows/scripts/delete-pr-caches.sh
