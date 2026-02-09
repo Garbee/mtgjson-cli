@@ -91,8 +91,18 @@ Eliminate long-lived credentials:
 ## Workflow Validation
 
 - Use actionlint for workflow linting
+- Ensure workflows pass `zizmor` scanning with the auditor persona enabled
 - Validate YAML syntax
 - Test in forks before enabling on main repo
+
+Example script for `zizmor` (auditor persona):
+
+```sh
+#!/usr/bin/env sh
+set -eu
+
+zizmor --persona auditor "<path-or-glob-for-workflow-files>"
+```
 
 ## Workflow Security Checklist
 
@@ -106,6 +116,7 @@ Eliminate long-lived credentials:
 - [ ] Dependency review on PRs
 - [ ] Security scanning (CodeQL, container, dependencies)
 - [ ] Workflow validated with actionlint
+- [ ] Workflow passes `zizmor` scanning with the auditor persona enabled
 - [ ] Environment protection for production
 - [ ] Branch protection rules enabled
 - [ ] Secret scanning with push protection
@@ -135,5 +146,6 @@ Eliminate long-lived credentials:
 - Default permissions should be read-only
 - OIDC is preferred over static credentials
 - Validate workflows with actionlint
+- Ensure `zizmor` with the auditor persona passes for all workflows
 - Never skip security scanning
 - Monitor workflows for failures and anomalies
