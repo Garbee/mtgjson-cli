@@ -53,11 +53,10 @@ cancel-in-progress: ${{ github.event_name != 'push' }}
 When a new workflow is needed, first determine whether it will be part of
 a required status check for pull requests:
 
-* **Required checks** must not use `paths` filters. Add the check as a
-  new job in the existing `basic-lint.yml` workflow (or a similar
-  event-driven workflow) so it runs on every relevant push and pull
-  request. This prevents pull requests from being unmergeable due to a
-  missing required status.
+* **Required checks** must not use `paths` filters. Configure the
+  workflow to always run on every relevant push and pull request. This
+  prevents pull requests from being unmergeable due to a missing
+  required status.
 * **Non-required workflows** should use `paths` filters on both `push`
   and `pull_request` triggers so they only run when relevant files
   change. For example, a workflow that builds Docker images should not
