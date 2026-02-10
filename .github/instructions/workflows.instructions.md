@@ -54,7 +54,7 @@ When a new workflow is needed, first determine whether it will be part of
 a required status check for pull requests:
 
 * **Required checks** must not use `paths` filters. Add the check as a
-  new job in the existing `tests.yml` workflow (or a similar
+  new job in the existing `basic-lint.yml` workflow (or a similar
   event-driven workflow) so it runs on every relevant push and pull
   request. This prevents pull requests from being unmergeable due to a
   missing required status.

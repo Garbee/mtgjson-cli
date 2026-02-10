@@ -1,0 +1,44 @@
+name: Basic Lint
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: ${{ github.event_name != 'push' }}
+
+permissions:
+  contents: read # Only needed for private repos. Needed to clone the repo.
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  simple_lint:
+    name: Simple Linters
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    container:
+      image: ghcr.io/garbee/mtgjson-cli-devcontainer@sha256:149e002097429f9ba25020c0c9c1a76b0c91c28d8df200f397fa5007d56a9881 # on.manual-35_1_2026-02-09-12-31-13
+    permissions:
+      contents: read # Only needed for private repos. Needed to clone the repo.
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: ls-lint
+        continue-on-error: true
+        run: .github/workflows/scripts/run-ls-lint.sh
+      - name: markdownlint-cli2
+        continue-on-error: true
+        run: .github/workflows/scripts/run-markdownlint-cli2.sh
+      - name: Check Linter Results
+        if: always()
+        run: .github/workflows/scripts/check-linter-results.sh
