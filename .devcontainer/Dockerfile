@@ -198,7 +198,8 @@ curl -fsSL https://gh.io/copilot-install | bash
 gosu ubuntu pnpm add -g \
   @dougis/markdown-lint-mcp@1.0.4 \
   markdownlint@0.40.0 \
-  markdownlint-cli2@0.20.0
+  markdownlint-cli2@0.20.0 \
+  cspell-cli@9.6.0
 
 go install golang.org/x/tools/gopls@v0.21.0
 
