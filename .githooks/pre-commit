@@ -89,10 +89,13 @@ fi
 ## Get all Dockerfiles that have been added, copied, or modified
 staged_dockerfiles=$(git diff --cached --name-only --diff-filter=ACM -- '**/Dockerfile')
 if [[ ! -z "$staged_dockerfiles" ]]; then
-  echo "Running hadolint for Dockerfiles"
+  echo "Running hadolint"
   staged_dockerfiles=$(echo "$staged_dockerfiles" | tr '\n' ' ')
   IFS=' ' read -r -a staged_dockerfiles_array <<< "$staged_dockerfiles"
-  hadolint "${staged_dockerfiles_array[@]}"
+  for dockerfile in "${staged_dockerfiles_array[@]}"; do
+    echo "---- Linting $dockerfile"
+    hadolint "$dockerfile"
+  done
 fi
 
 echo -e "\e[42;30mSUCCESS\e[0m"
