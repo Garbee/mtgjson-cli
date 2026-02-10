@@ -148,7 +148,7 @@ elif [ "$ARCH" = "arm64" ]; then
   MITMPROXY_ARCH="aarch64"
 fi
 # Download and extract mitmproxy
-curl -fsSL https://downloads.mitmproxy.org/12.2.1/mitmproxy-12.2.1-linux-${MITMPROXY_ARCH}.tar.gz | tar xz -C /usr/local/bin/
+curl -fsSL "https://downloads.mitmproxy.org/12.2.1/mitmproxy-12.2.1-linux-${MITMPROXY_ARCH}.tar.gz" | tar xz -C /usr/local/bin/
 
 # Install pnpm globally
 curl -fsSL https://get.pnpm.io/install.sh | \

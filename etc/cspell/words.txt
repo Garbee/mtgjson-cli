@@ -1,5 +1,6 @@
 buildx
 dind
+Dockerfiles
 endgroup
 EONPMRC
 EOSUDOERS

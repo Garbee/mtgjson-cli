@@ -86,5 +86,14 @@ if [[ ! -z "$staged_workflow_files" ]]; then
   actionlint "${staged_workflow_files_array[@]}"
 fi
 
+## Get all Dockerfiles that have been added, copied, or modified
+staged_dockerfiles=$(git diff --cached --name-only --diff-filter=ACM -- '**/Dockerfile')
+if [[ ! -z "$staged_dockerfiles" ]]; then
+  echo "Running hadolint for Dockerfiles"
+  staged_dockerfiles=$(echo "$staged_dockerfiles" | tr '\n' ' ')
+  IFS=' ' read -r -a staged_dockerfiles_array <<< "$staged_dockerfiles"
+  hadolint "${staged_dockerfiles_array[@]}"
+fi
+
 echo -e "\e[42;30mSUCCESS\e[0m"
 echo "Pre-commit checks passed"
