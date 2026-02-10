@@ -14,6 +14,7 @@ FROM mikefarah/yq:4.52.2 AS yq-src
 FROM hairyhenderson/gomplate:v4.3.3 AS gomplate-src
 FROM ghcr.io/wagoodman/dive:v0.13.1 AS dive-src
 FROM lslintorg/ls-lint:1.11.2 AS lslint-src
+FROM ghcr.io/orhun/git-cliff/git-cliff:2.12.0 AS git-cliff-src
 
 ##
 ## Stage 2: runtime (Ubuntu latest LTS)
@@ -74,6 +75,7 @@ COPY --link --from=dive-src        /usr/local/bin/dive     /usr/local/bin/dive
 ## Actionlint also has shellcheck in its bin
 COPY --link --from=actionlint-src  /usr/local/bin/ /usr/local/bin/
 COPY --link --from=lslint-src  /ls-lint /usr/local/bin/
+COPY --link --from=git-cliff-src  /usr/local/bin/git-cliff /usr/local/bin/git-cliff
 
 # Copy Go toolchain (GOROOT)
 COPY --link --from=go-src \
@@ -134,13 +136,16 @@ EOSUDOERS
 visudo -c -f /etc/sudoers.d/ubuntu
 
 ARCH=$(dpkg --print-architecture)
+
+if [ "$ARCH" != "amd64" ] && [ "$ARCH" != "arm64" ]; then
+  echo "Unsupported architecture: $ARCH"
+  exit 1
+fi
+
 if [ "$ARCH" = "amd64" ]; then
   MITMPROXY_ARCH="x86_64"
 elif [ "$ARCH" = "arm64" ]; then
   MITMPROXY_ARCH="aarch64"
-else
-  echo "Unsupported architecture: $ARCH"
-  exit 1
 fi
 # Download and extract mitmproxy
 curl -fsSL https://downloads.mitmproxy.org/12.2.1/mitmproxy-12.2.1-linux-${MITMPROXY_ARCH}.tar.gz | tar xz -C /usr/local/bin/
