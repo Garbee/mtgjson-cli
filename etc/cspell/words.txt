@@ -15,6 +15,7 @@ goplsmcp
 GOROOT
 gosu
 gotmpl
+hocon
 imagetools
 jqlang
 keytar
@@ -31,6 +32,7 @@ opencontainers
 protobufjs
 sarif
 shellcheck
+shellfmt
 shfmt
 shrc
 skopeo

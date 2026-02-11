@@ -15,19 +15,17 @@ echo "Running pre-commit checks"
 commands=(ls-lint pnpm)
 commandsNotFound=()
 for cmd in "${commands[@]}"; do
-  if ! command -v "$cmd" &> /dev/null; then
+  if ! command -v "$cmd" &>/dev/null; then
     commandsNotFound+=("$cmd")
   fi
 done
 
 if [[ ${#commandsNotFound[@]} -ne 0 ]]; then
-  # Make the color red background with black text for visibility
-  echo -e "\e[41;30mERROR\e[0m"
-  echo "The following required commands are not installed: ${commandsNotFound[*]}"
-  echo "Please install them to proceed."
+  echo -e "\e[41;30mERROR\e[0m" >&2
+  echo "The following required commands are not installed: ${commandsNotFound[*]}" >&2
+  echo "Please install them to proceed." >&2
   exit 1
 fi
-
 
 # Add cspell things for this file here that we don't need elsewhere.
 # cSpell:words ACMRT,ACRT
@@ -58,7 +56,7 @@ if [[ ! -z "$staged_markdown_files" ]]; then
   staged_markdown_files=$(echo "$staged_markdown_files" | grep -v '.markdownlint-cli2.mjs')
   # convert newlines to spaces for the markdownlint command
   staged_markdown_files=$(echo "$staged_markdown_files" | tr '\n' ' ')
-  IFS=' ' read -r -a staged_markdown_files_array <<< "$staged_markdown_files"
+  IFS=' ' read -r -a staged_markdown_files_array <<<"$staged_markdown_files"
   pnpm dlx markdownlint-cli2 "${staged_markdown_files_array[@]}"
 fi
 
@@ -67,13 +65,14 @@ staged_bin_files=$(git diff --cached --name-only --diff-filter=ACMRT -- '.githoo
 # exclude markdown files from being made executable
 staged_bin_files=$(echo "$staged_bin_files" | grep -v '\.md$')
 if [[ ! -z "$staged_bin_files" ]]; then
-  echo "Ensuring shell script files are executable"
+  echo "Working on shell scripts"
   while IFS= read -r file; do
     if [[ -f "$file" ]]; then
       chmod +x "$file"
+      shfmt -w "$file"
       git add "$file"
     fi
-  done <<< "$staged_bin_files"
+  done <<<"$staged_bin_files"
 fi
 
 ## Scan all workflow files in .github/workflows
@@ -81,7 +80,7 @@ staged_workflow_files=$(git diff --cached --name-only --diff-filter=ACMRT -- '.g
 if [[ ! -z "$staged_workflow_files" ]]; then
   echo "Running scans for Github Actions workflow files"
   staged_workflow_files=$(echo "$staged_workflow_files" | tr '\n' ' ')
-  IFS=' ' read -r -a staged_workflow_files_array <<< "$staged_workflow_files"
+  IFS=' ' read -r -a staged_workflow_files_array <<<"$staged_workflow_files"
   zizmor --persona auditor "${staged_workflow_files_array[@]}"
   actionlint "${staged_workflow_files_array[@]}"
 fi
@@ -91,7 +90,7 @@ staged_dockerfiles=$(git diff --cached --name-only --diff-filter=ACM -- '**/Dock
 if [[ ! -z "$staged_dockerfiles" ]]; then
   echo "Running hadolint"
   staged_dockerfiles=$(echo "$staged_dockerfiles" | tr '\n' ' ')
-  IFS=' ' read -r -a staged_dockerfiles_array <<< "$staged_dockerfiles"
+  IFS=' ' read -r -a staged_dockerfiles_array <<<"$staged_dockerfiles"
   for dockerfile in "${staged_dockerfiles_array[@]}"; do
     echo "---- Linting $dockerfile"
     hadolint "$dockerfile"
