@@ -25,6 +25,8 @@ jobs:
       contents: read # Required to checkout the repository.
     timeout-minutes: 5
     steps:
+      - name: Start Workflow Telemetry
+        uses: dev-hato/actions-workflow-metrics@5269359070fd41816e138edfdeec9caff3f71135 # v0.0.3
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
