@@ -24,6 +24,7 @@ ignore:
   - .devcontainer
   - .githooks
   - .github
+  - .vscode
   - .ls-lint.yml
   - LICENSE
   - docs/AGENTS.md
